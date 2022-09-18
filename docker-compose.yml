@@ -9,6 +9,16 @@ services:
       KAFKA_SERVERS: kafka:9092
     depends_on:
       - kafka
+    restart: always
+
+  db_writer:
+    build: ./db_writer
+    environment:
+      KAFKA_SERVERS: kafka:9092
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      - kafka
+    restart: always
 
   zookeeper:
     image: wurstmeister/zookeeper
