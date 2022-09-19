@@ -31,6 +31,15 @@ def main():
                     (msg.value['company_id'], msg.value['review_id'], \
                         msg.value['title'], msg.value['content'], msg.value['rating'])
                 )
+                _, version = session.execute(
+                    """
+                    SELECT company_id, MAX(writetime(content)) as version
+                    FROM reviews
+                    WHERE company_id = %s
+                    """,(msg.value['company_id'],)
+                ).one()
+
+                print(f"latest version is {version}")
                 print(msg)
     finally:
         if kafka:
