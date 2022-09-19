@@ -7,8 +7,11 @@ services:
       - 80:80
     environment:
       KAFKA_SERVERS: kafka:9092
+      CASSANDRA_SERVER: cassandra
+      PYTHONUNBUFFERED: 1
     depends_on:
       - kafka
+      - cassandra
     restart: always
 
   db_writer:
@@ -19,6 +22,7 @@ services:
       PYTHONUNBUFFERED: 1
     depends_on:
       - kafka
+      - cassandra
     restart: always
 
   zookeeper:

@@ -35,6 +35,8 @@ def main():
     finally:
         if kafka:
             kafka.close()
+        if cluster:
+            cluster.shutdown()
 
 if __name__ == '__main__':
     main()
