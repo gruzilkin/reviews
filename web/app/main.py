@@ -5,23 +5,29 @@ import os
 from kafka import KafkaProducer
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class Review(BaseModel):
+    title: str
+    content: str
+    rating: int
 
 @app.get("/v1")
 def read_root():
     return {"Hello": "World"}
-
 
 @app.get("/v1/{company_id}/reviews")
 def read_item(company_id: int):
     return {"company_id": company_id}
 
 @app.post("/v1/{company_id}/reviews")
-def post_item(company_id: int):
+def post_item(company_id: int, review: Review):
     id = uuid.uuid4()
-    message =  {"company_id": company_id, "review_id": id }
-    future = getKafkaProducer().send('reviews', str(message), key=company_id)
+    message =  {"company_id": company_id, "review_id": str(id),
+        "title": review.title, "content":review.content, "rating": review.rating}
+    future = getKafkaProducer().send('reviews', message, key=company_id)
     record = future.get(timeout=60)
     print(record)
     return message

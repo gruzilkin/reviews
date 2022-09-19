@@ -34,3 +34,22 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     depends_on:
       - zookeeper
+
+  cassandra:
+    image: cassandra:4.0
+    ports:
+      - 9042:9042
+    environment:
+      - CASSANDRA_CLUSTER_NAME=reviews
+
+  cassandra-init:
+    image: nuvo/docker-cqlsh
+    volumes:
+      - ./cassandra/setup.cql:/scripts/data.cql
+    environment:
+      - CQLSH_HOST=cassandra
+      - CQLSH_PORT=9042
+      - CQLVERSION=3.4.5
+    depends_on:
+      - cassandra
+    restart: on-failure
