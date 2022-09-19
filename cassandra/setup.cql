@@ -4,10 +4,9 @@ USE reviews;
 
 CREATE TABLE IF NOT EXISTS reviews (
     company_id int,
-    review_id uuid,
+    review_id bigint,
     title text,
     content text,
     rating int,
-    insert_date timeuuid,
-    PRIMARY KEY ((company_id, review_id), insert_date)
-) WITH CLUSTERING ORDER BY (insert_date DESC);
+    PRIMARY KEY ((company_id), review_id)
+) WITH CLUSTERING ORDER BY (review_id DESC);

@@ -4,6 +4,8 @@ import os
 
 from kafka import KafkaProducer
 
+from sonyflake import SonyFlake
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -24,8 +26,9 @@ def read_item(company_id: int):
 
 @app.post("/v1/{company_id}/reviews")
 def post_item(company_id: int, review: Review):
-    id = uuid.uuid4()
-    message =  {"company_id": company_id, "review_id": str(id),
+    idGenerator = getIdGenerator()
+    id = idGenerator.next_id()
+    message =  {"company_id": company_id, "review_id": id,
         "title": review.title, "content":review.content, "rating": review.rating}
     future = getKafkaProducer().send('reviews', message, key=company_id)
     record = future.get(timeout=60)
@@ -45,3 +48,13 @@ def getKafkaProducer() -> KafkaProducer:
         value_serializer=lambda v: json.dumps(v).encode('utf-8'),
         key_serializer=lambda k: str(k).encode('utf-8'))
     return kafka
+
+idGenerator = None
+def getIdGenerator() -> SonyFlake:
+    global idGenerator
+
+    if idGenerator:
+        return idGenerator
+
+    idGenerator = SonyFlake()
+    return idGenerator

@@ -15,6 +15,7 @@ services:
     build: ./db_writer
     environment:
       KAFKA_SERVERS: kafka:9092
+      CASSANDRA_SERVER: cassandra
       PYTHONUNBUFFERED: 1
     depends_on:
       - kafka
