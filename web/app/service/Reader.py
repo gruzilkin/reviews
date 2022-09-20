@@ -18,7 +18,7 @@ class Reader:
         self.cassandra.shutdown()
         self.memcached.close()
 
-    def getCompanyDataVersion(self, company_id: int) -> int:
+    def __getCompanyDataVersion(self, company_id: int) -> int:
         key = f"company_id_{company_id}_version"
         version = self.memcached.get(key)
         if not version:
@@ -34,8 +34,8 @@ class Reader:
         print(f"latest version in cache is {version}")
         return version
 
-    def getCompanyReviewIds(self, company_id) -> List[int]:
-        version = self.getCompanyDataVersion(company_id)
+    def __getCompanyReviewIds(self, company_id) -> List[int]:
+        version = self.__getCompanyDataVersion(company_id)
         key = f"company_id_{company_id}_review_ids_{version}"
         review_ids = self.memcached.get(key)
         if not review_ids:
@@ -55,11 +55,23 @@ class Reader:
             self.memcached.set(key, review_ids)
 
         return review_ids
+
+    def __loadCompanyReviews(self, company_id, review_ids: List[int]) -> Dict[int, Review]:
+        rows = self.cassandra.execute(f"""
+            SELECT review_id, title, content, rating
+            FROM reviews
+            WHERE company_id = %s AND review_id IN ({",".join(["%s"] * len(review_ids))})
+            """, (company_id, *review_ids))
+        reviews = dict()
+        for review_id, title, content, rating in rows:
+            reviews[review_id] = Review(review_id, title, content, rating)
+        return reviews
+
     def getCompanyReviews(self, company_id) -> Reviews:
-        review_ids = self.getCompanyReviewIds(company_id)
+        review_ids = self.__getCompanyReviewIds(company_id)
         cache = self.memcached.get_many([str(review_id) for review_id in review_ids])
         missing_review_ids = [review_id for review_id in review_ids if str(review_id) not in cache]
-        missing_reviews = self.loadCompanyReviews(company_id, missing_review_ids)
+        missing_reviews = self.__loadCompanyReviews(company_id, missing_review_ids)
         self.memcached.set_many({str(key):value for key, value in missing_reviews.items()})
 
         reviews = []
@@ -74,14 +86,3 @@ class Reader:
                 review.source = "cassandra"
                 reviews.append(review)
         return Reviews(reviews)
-
-    def loadCompanyReviews(self, company_id, review_ids: List[int]) -> Dict[int, Review]:
-        rows = self.cassandra.execute(f"""
-            SELECT review_id, title, content, rating
-            FROM reviews
-            WHERE company_id = %s AND review_id IN ({",".join(["%s"] * len(review_ids))})
-            """, (company_id, *review_ids))
-        reviews = dict()
-        for review_id, title, content, rating in rows:
-            reviews[review_id] = Review(review_id, title, content, rating)
-        return reviews

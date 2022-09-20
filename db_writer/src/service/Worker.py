@@ -54,12 +54,12 @@ class Worker:
                     """,(company_id,)
                 ).one()
 
-                self.updateCompanyDataVersion(company_id, version)
+                self.__updateCompanyDataVersion(company_id, version)
 
                 print(f"latest version is {version}")
                 print(msg)
 
-    def updateCompanyDataVersion(self, company_id: int, new_version: int):
+    def __updateCompanyDataVersion(self, company_id: int, new_version: int):
         key = f"company_id_{company_id}_version"
         version, cas = self.memcached.gets(key)
         if version:
