@@ -1,37 +1,14 @@
-import json
-import os
-from typing import List
-
-from dataclasses import dataclass
-
-from kafka import KafkaProducer
-
-from cassandra.cluster import Cluster
-
-from sonyflake import SonyFlake
-
 from fastapi import FastAPI
-from pydantic import BaseModel
 
-from pymemcache.client.base import Client
+from app.dto.Review import Review
+from app.dto.Reviews import Reviews
+from app.dto.ReviewRequest import ReviewRequest
+from app.service.Memcached import getMemcachedClient
+from app.service.Cassandra import getCassandraCluster
+from app.service.IdGenerator import getIdGenerator
+from app.service.Kafka import getKafkaProducer
 
 app = FastAPI()
-
-@dataclass
-class Review():
-    review_id: int
-    title: str
-    content: str
-    rating: int
-
-@dataclass
-class Reviews():
-    reviews: List[Review]
-
-class ReviewRequest(BaseModel):
-    title: str
-    content: str
-    rating: int
 
 @app.get("/v1")
 def read_root():
@@ -77,48 +54,3 @@ def post_item(company_id: int, request: ReviewRequest) -> Review:
     print(review)
     return review
 
-kafka = None
-def getKafkaProducer() -> KafkaProducer:
-    global kafka
-
-    if kafka:
-        return kafka
-    
-    servers = os.environ['KAFKA_SERVERS']
-    print(f"kafka producer connecting to {servers}")
-    kafka = KafkaProducer(bootstrap_servers=servers,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-        key_serializer=lambda k: str(k).encode('utf-8'))
-    return kafka
-
-idGenerator = None
-def getIdGenerator() -> SonyFlake:
-    global idGenerator
-
-    if idGenerator:
-        return idGenerator
-
-    idGenerator = SonyFlake()
-    return idGenerator
-
-cassandraCluster = None
-def getCassandraCluster() -> Cluster:
-    global cassandraCluster
-    if cassandraCluster:
-        return cassandraCluster
-
-    cassandra_server = os.environ['CASSANDRA_SERVER']
-    print(f"cassandra connecting to {cassandra_server}")
-    cassandraCluster = Cluster([cassandra_server])
-    return cassandraCluster
-
-memcachedClient = None
-def getMemcachedClient() -> Client:
-    global memcachedClient
-    if memcachedClient:
-        return memcachedClient
-
-    memcached_server = os.environ['MEMCACHED_SERVER']
-    print(f"memcache client connecting to {memcached_server}")
-    memcachedClient = Client(memcached_server)
-    return memcachedClient
