@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
 class Review():
@@ -6,3 +7,4 @@ class Review():
     title: str
     content: str
     rating: int
+    source: Optional[str] = None
