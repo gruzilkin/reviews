@@ -33,21 +33,38 @@ class Worker:
         while True:
             for msg in self.kafka:
                 print(msg.value)
+                company_id = msg.value['company_id']
+                review_id = msg.value['review_id']
+                title = msg.value['title']
+                content = msg.value['content']
+                rating = msg.value['rating']
+
                 self.cassandra.execute(
                     """
                     INSERT INTO reviews (company_id, review_id, title, content, rating)
                     VALUES (%s, %s, %s, %s, %s)
                     """,
-                    (msg.value['company_id'], msg.value['review_id'], \
-                        msg.value['title'], msg.value['content'], msg.value['rating'])
+                    (company_id, review_id, title, content, rating)
                 )
                 _, version = self.cassandra.execute(
                     """
                     SELECT company_id, MAX(writetime(content)) as version
                     FROM reviews
                     WHERE company_id = %s
-                    """,(msg.value['company_id'],)
+                    """,(company_id,)
                 ).one()
+
+                self.updateCompanyDataVersion(company_id, version)
 
                 print(f"latest version is {version}")
                 print(msg)
+
+    def updateCompanyDataVersion(self, company_id: int, new_version: int):
+        key = f"company_id_{company_id}_version"
+        version, cas = self.memcached.gets(key)
+        if version:
+            if new_version > version:
+                self.memcached.cas(key, new_version, cas)
+        else:
+            self.memcached.add(key, new_version)
+            self.updateCompanyDataVersion(company_id, new_version)
