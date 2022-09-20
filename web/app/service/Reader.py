@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 from app.service.Memcached import getMemcachedClient
 from app.service.Cassandra import getCassandraCluster
+from cassandra.cluster import Session
 from app.dto.Reviews import Reviews
 from app.dto.Review import Review
 
@@ -10,19 +11,27 @@ class Reader:
         pass        
 
     def __enter__(self):
-        self.cassandra = getCassandraCluster().connect('reviews')
+        self.cassandra = None
         self.memcached = getMemcachedClient()
         return self
   
     def __exit__(self, exc_type, exc_value, traceback):
-        #self.cassandra.shutdown()
+        if self.cassandra:
+            self.cassandra.shutdown()
         self.memcached.close()
+
+    def __cassandra(self) -> Session:
+        if self.cassandra:
+            return self.cassandra
+        
+        self.cassandra = getCassandraCluster().connect('reviews')
+        return self.cassandra
 
     def __getCompanyDataVersion(self, company_id: int) -> int:
         key = f"company_id_{company_id}_version"
         version = self.memcached.get(key)
         if not version:
-            (version,) = self.cassandra.execute(
+            (version,) = self.__cassandra().execute(
                         """
                         SELECT MAX(writetime(content)) as version
                         FROM reviews
@@ -39,7 +48,7 @@ class Reader:
         key = f"company_id_{company_id}_review_ids_{version}"
         review_ids = self.memcached.get(key)
         if not review_ids:
-            rows = self.cassandra.execute(
+            rows = self.__cassandra().execute(
                         """
                         SELECT review_id
                         FROM reviews
@@ -57,7 +66,10 @@ class Reader:
         return review_ids
 
     def __loadCompanyReviews(self, company_id, review_ids: List[int]) -> Dict[int, Review]:
-        rows = self.cassandra.execute(f"""
+        if len(review_ids) == 0:
+            return dict()
+
+        rows = self.__cassandra().execute(f"""
             SELECT review_id, title, content, rating
             FROM reviews
             WHERE company_id = %s AND review_id IN ({",".join(["%s"] * len(review_ids))})
@@ -72,7 +84,8 @@ class Reader:
         cache = self.memcached.get_many([str(review_id) for review_id in review_ids])
         missing_review_ids = [review_id for review_id in review_ids if str(review_id) not in cache]
         missing_reviews = self.__loadCompanyReviews(company_id, missing_review_ids)
-        self.memcached.set_many({str(key):value for key, value in missing_reviews.items()})
+        if missing_reviews:
+            self.memcached.set_many({str(key):value for key, value in missing_reviews.items()})
 
         reviews = []
         print(f"review_ids of type {type(review_ids)}: {review_ids}")
