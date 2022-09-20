@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="gGi4H9r4V06tX_kbE4wG" name="Page-1">
-        <mxGraphModel dx="856" dy="428" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="860" dy="376" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -26,7 +26,7 @@
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-7" value="" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;html=1;curved=1;" parent="1" source="WrSqrYOQCW2Mg6NUQv-p-4" target="WrSqrYOQCW2Mg6NUQv-p-6" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-4" value="Write API&lt;br&gt;POST /v1/company_id/reviews&lt;br&gt;&lt;br&gt;{&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px; border: none; padding: 0px;&quot;&gt;&lt;/blockquote&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; review: {&lt;/span&gt;&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px; border: none; padding: 0px;&quot;&gt;&lt;/blockquote&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; &amp;nbsp; title: X,&lt;/span&gt;&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px; border: none; padding: 0px;&quot;&gt;&lt;/blockquote&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; &amp;nbsp; rating: X,&lt;/span&gt;&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px; border: none; padding: 0px;&quot;&gt;&lt;/blockquote&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; &amp;nbsp; content: X&lt;/span&gt;&lt;br&gt;&amp;nbsp; }&lt;br&gt;}&lt;br&gt;&lt;br&gt;Generates ID for review" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-4" value="Write API&lt;br&gt;POST /v1/company_id/reviews&lt;br&gt;&lt;br&gt;{&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px ; border: none ; padding: 0px&quot;&gt;&lt;/blockquote&gt;&lt;span&gt;&amp;nbsp; title: X,&lt;/span&gt;&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px ; border: none ; padding: 0px&quot;&gt;&lt;/blockquote&gt;&lt;span&gt;&amp;nbsp; rating: X,&lt;/span&gt;&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px ; border: none ; padding: 0px&quot;&gt;&lt;/blockquote&gt;&lt;span&gt;&amp;nbsp; content: X&lt;/span&gt;&lt;br&gt;}&lt;br&gt;&lt;br&gt;Generates ID for review" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
                     <mxGeometry x="240" y="40" width="140" height="200" as="geometry"/>
                 </mxCell>
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-10" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="WrSqrYOQCW2Mg6NUQv-p-6" target="2" edge="1">
@@ -54,8 +54,8 @@
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-12" value="company_id&#10;review_id&#10;title&#10;rating&#10;content" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" parent="WrSqrYOQCW2Mg6NUQv-p-11" vertex="1">
                     <mxGeometry y="30" width="160" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-17" value="&lt;br&gt;&lt;br&gt;Redis&lt;br&gt;company_id_suffix: suffix&lt;br&gt;company_id_rating_suffix: {review_ids}&lt;br&gt;&lt;br&gt;review_id: {title, rating, content} with ttl" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;align=left;" parent="1" vertex="1">
-                    <mxGeometry x="320" y="500" width="220" height="170" as="geometry"/>
+                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-17" value="&lt;br&gt;&lt;br&gt;Memcached&lt;br&gt;company_id_X_version: VERSION&lt;br&gt;company_id_X_rating_VERSION: {review_ids}&lt;br&gt;&lt;br&gt;review_id: {title, rating, content}" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.database;whiteSpace=wrap;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="500" width="270" height="170" as="geometry"/>
                 </mxCell>
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-24" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="WrSqrYOQCW2Mg6NUQv-p-23" target="WrSqrYOQCW2Mg6NUQv-p-17" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -68,31 +68,31 @@
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-26" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="WrSqrYOQCW2Mg6NUQv-p-23" target="WrSqrYOQCW2Mg6NUQv-p-8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-27" value="fetch data if missing in cache&lt;br&gt;use compare and set for suffix" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WrSqrYOQCW2Mg6NUQv-p-26" vertex="1" connectable="0">
+                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-27" value="fetch data if missing in cache" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WrSqrYOQCW2Mg6NUQv-p-26" vertex="1" connectable="0">
                     <mxGeometry x="0.2147" y="-25" relative="1" as="geometry">
                         <mxPoint x="-27" y="25" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-23" value="Read API&lt;br&gt;GET /v1/company_id/reviews?offset=X&amp;amp;limit=X&amp;amp;rating=X&lt;br&gt;&lt;br&gt;{&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px; border: none; padding: 0px;&quot;&gt;&lt;/blockquote&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp; reviews: [&lt;br&gt;&amp;nbsp; &amp;nbsp; {title: X, rating: X, content: X}&lt;br&gt;&lt;/span&gt;&amp;nbsp; ],&lt;br&gt;&amp;nbsp; total: X&lt;br&gt;}" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-23" value="Read API&lt;br&gt;GET /v1/company_id/reviews?offset=X&amp;amp;limit=X&amp;amp;rating=X&lt;br&gt;&lt;br&gt;{&lt;br&gt;&lt;blockquote style=&quot;margin: 0 0 0 40px ; border: none ; padding: 0px&quot;&gt;&lt;/blockquote&gt;&lt;span&gt;&amp;nbsp; reviews: [ {&lt;br&gt;&amp;nbsp; &amp;nbsp; review_id: X,&lt;br&gt;&amp;nbsp; &amp;nbsp; title: X,&lt;br&gt;&amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;/span&gt;content: X,&lt;span&gt;&lt;br&gt;&amp;nbsp; &amp;nbsp; rating: X&lt;br&gt;&amp;nbsp; &amp;nbsp; }&amp;nbsp;&lt;/span&gt;],&lt;br&gt;&amp;nbsp; total: X&lt;br&gt;}" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
                     <mxGeometry x="30" y="260" width="170" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="" style="edgeStyle=none;html=1;curved=1;startArrow=classic;startFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="2" target="WrSqrYOQCW2Mg6NUQv-p-8">
+                <mxCell id="3" value="" style="edgeStyle=none;html=1;curved=1;startArrow=classic;startFill=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="2" target="WrSqrYOQCW2Mg6NUQv-p-8" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="600" y="250" as="sourcePoint"/>
                         <mxPoint x="590" y="240" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="5" value="1 write review&lt;br&gt;2 read version" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="3">
+                <mxCell id="5" value="1 write review&lt;br&gt;2 read version" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3" vertex="1" connectable="0">
                     <mxGeometry x="0.08" relative="1" as="geometry">
                         <mxPoint x="3" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="4" style="edgeStyle=none;curved=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="2">
+                <mxCell id="4" style="edgeStyle=none;curved=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="2" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="720" y="305" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="2" value="DB writer&lt;br&gt;1 write to Cassandra&lt;br&gt;2 read latest row version&lt;br&gt;3 update company data version in cache" style="rounded=1;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+                <mxCell id="2" value="DB writer&lt;br&gt;1 write to Cassandra&lt;br&gt;2 read latest row version&lt;br&gt;3 update company data version in cache" style="rounded=1;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
                     <mxGeometry x="670" y="220" width="150" height="115" as="geometry"/>
                 </mxCell>
             </root>
