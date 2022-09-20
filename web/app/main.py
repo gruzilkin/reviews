@@ -13,6 +13,8 @@ from sonyflake import SonyFlake
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from pymemcache.client.base import Client
+
 app = FastAPI()
 
 @dataclass
@@ -37,8 +39,22 @@ def read_root():
 
 @app.get("/v1/{company_id}/reviews")
 def read_item(company_id: int) -> Reviews:
-    session = getCassandraCluster().connect('reviews')
-    try:
+    with getCassandraCluster().connect('reviews') as session:
+        memcachedClient = getMemcachedClient()
+        company_version_key = f"company_id_{company_id}_version"
+        version = memcachedClient.get(company_version_key)
+        if not version:
+            _, version = session.execute(
+                        """
+                        SELECT company_id, MAX(writetime(content)) as version
+                        FROM reviews
+                        WHERE company_id = %s
+                        """,(company_id,)
+                    ).one()
+            memcachedClient.set(company_version_key, version)
+        else:
+            print(f"latest version in cache is {version}")
+
         rows = session.execute("""
             SELECT review_id, title, content, rating
             FROM reviews
@@ -47,9 +63,6 @@ def read_item(company_id: int) -> Reviews:
         for review_id, title, content, rating in rows:
             reviews.append(Review(review_id, title, content, rating))
         return Reviews(reviews)
-    finally:
-        if session:
-            session.shutdown()
 
 @app.post("/v1/{company_id}/reviews")
 def post_item(company_id: int, request: ReviewRequest) -> Review:
@@ -98,3 +111,14 @@ def getCassandraCluster() -> Cluster:
     print(f"cassandra connecting to {cassandra_server}")
     cassandraCluster = Cluster([cassandra_server])
     return cassandraCluster
+
+memcachedClient = None
+def getMemcachedClient() -> Client:
+    global memcachedClient
+    if memcachedClient:
+        return memcachedClient
+
+    memcached_server = os.environ['MEMCACHED_SERVER']
+    print(f"memcache client connecting to {memcached_server}")
+    memcachedClient = Client(memcached_server)
+    return memcachedClient

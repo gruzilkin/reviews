@@ -8,6 +8,7 @@ services:
     environment:
       KAFKA_SERVERS: kafka:9092
       CASSANDRA_SERVER: cassandra
+      MEMCACHED_SERVER: memcached
       PYTHONUNBUFFERED: 1
     depends_on:
       - kafka
@@ -19,11 +20,15 @@ services:
     environment:
       KAFKA_SERVERS: kafka:9092
       CASSANDRA_SERVER: cassandra
+      MEMCACHED_SERVER: memcached
       PYTHONUNBUFFERED: 1
     depends_on:
       - kafka
       - cassandra
     restart: always
+  
+  memcached:
+    image: memcached:latest
 
   zookeeper:
     image: wurstmeister/zookeeper

@@ -3,3 +3,4 @@ uvicorn
 kafka-python
 sonyflake-py
 cassandra-driver
+pymemcache
