@@ -15,7 +15,7 @@ class Reader:
         return self
   
     def __exit__(self, exc_type, exc_value, traceback):
-        self.cassandra.shutdown()
+        #self.cassandra.shutdown()
         self.memcached.close()
 
     def __getCompanyDataVersion(self, company_id: int) -> int:

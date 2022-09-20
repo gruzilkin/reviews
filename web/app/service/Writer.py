@@ -21,6 +21,7 @@ class Writer:
         message =  {"company_id": company_id, "review_id": id,
             "title": request.title, "content":request.content, "rating": request.rating}
         future = getKafkaProducer().send('reviews', message, key=company_id)
-        future.get(timeout=60)
+        result = future.get(timeout=60)
+        print(result)
         
         return Review(id, request.title, request.content, request.rating, source="web")

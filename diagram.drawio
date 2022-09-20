@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="gGi4H9r4V06tX_kbE4wG" name="Page-1">
-        <mxGraphModel dx="860" dy="376" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="788" dy="347" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -35,7 +35,7 @@
                 <mxCell id="WrSqrYOQCW2Mg6NUQv-p-20" value="" style="edgeStyle=orthogonalEdgeStyle;curved=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="2" target="WrSqrYOQCW2Mg6NUQv-p-17" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-21" value="3 update company cache key suffix&lt;br&gt;with compare and set" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WrSqrYOQCW2Mg6NUQv-p-20" vertex="1" connectable="0">
+                <mxCell id="WrSqrYOQCW2Mg6NUQv-p-21" value="3 update company cache key suffix" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="WrSqrYOQCW2Mg6NUQv-p-20" vertex="1" connectable="0">
                     <mxGeometry x="-0.0318" y="-2" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>

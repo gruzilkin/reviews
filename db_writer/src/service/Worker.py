@@ -12,7 +12,7 @@ class Worker:
     def __enter__(self):
         kafka_servers = os.environ['KAFKA_SERVERS']
         self.kafka = KafkaConsumer(bootstrap_servers=kafka_servers,
-                group_id='reviews_writer', enable_auto_commit=False,
+                group_id='reviews_writer', enable_auto_commit=False, auto_offset_reset='earliest',
                 key_deserializer=lambda k: int(bytes(k).decode('utf-8')),
                 value_deserializer=lambda v: json.loads(bytes(v).decode('utf-8')))
         self.kafka.subscribe(['reviews'])
@@ -58,15 +58,6 @@ class Worker:
 
                 self.kafka.commit()
 
-                print(f"latest version is {version}")
-                print(msg)
-
     def __updateCompanyDataVersion(self, company_id: int, new_version: int):
         key = f"company_id_{company_id}_version"
-        version, cas = self.memcached.gets(key)
-        if version:
-            if new_version > version:
-                self.memcached.cas(key, new_version, cas)
-        else:
-            self.memcached.add(key, new_version)
-            self.updateCompanyDataVersion(company_id, new_version)
+        self.memcached.set(key, new_version)
