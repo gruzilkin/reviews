@@ -12,7 +12,7 @@ class Worker:
     def __enter__(self):
         kafka_servers = os.environ['KAFKA_SERVERS']
         self.kafka = KafkaConsumer(bootstrap_servers=kafka_servers,
-                group_id='reviews_writer',
+                group_id='reviews_writer', enable_auto_commit=False,
                 key_deserializer=lambda k: int(bytes(k).decode('utf-8')),
                 value_deserializer=lambda v: json.loads(bytes(v).decode('utf-8')))
         self.kafka.subscribe(['reviews'])
@@ -32,7 +32,7 @@ class Worker:
     def doWork(self):
         while True:
             for msg in self.kafka:
-                print(msg.value)
+                print(msg)
                 company_id = msg.value['company_id']
                 review_id = msg.value['review_id']
                 title = msg.value['title']
@@ -55,6 +55,8 @@ class Worker:
                 ).one()
 
                 self.__updateCompanyDataVersion(company_id, version)
+
+                self.kafka.commit()
 
                 print(f"latest version is {version}")
                 print(msg)
