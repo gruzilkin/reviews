@@ -17,8 +17,8 @@ class Worker:
                 value_deserializer=lambda v: json.loads(bytes(v).decode('utf-8')))
         self.kafka.subscribe(['reviews'])
 
-        cassandra_server = os.environ['CASSANDRA_SERVER']
-        self.cassandra = Cluster([cassandra_server]).connect('reviews')
+        cassandra_servers = os.environ['CASSANDRA_SERVERS']
+        self.cassandra = Cluster([server.strip() for server in cassandra_servers.split(",")]).connect('reviews')
         
         memcached_server = os.environ['MEMCACHED_SERVER']
         self.memcached = Client(memcached_server, serde=serde.pickle_serde)

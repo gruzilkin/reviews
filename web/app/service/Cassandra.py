@@ -8,7 +8,6 @@ def getCassandraCluster() -> Cluster:
     if cassandraCluster:
         return cassandraCluster
 
-    cassandra_server = os.environ['CASSANDRA_SERVER']
-    print(f"cassandra connecting to {cassandra_server}")
-    cassandraCluster = Cluster([cassandra_server])
+    cassandra_servers = os.environ['CASSANDRA_SERVERS']
+    cassandraCluster = Cluster([server.strip() for server in cassandra_servers.split(",")])
     return cassandraCluster

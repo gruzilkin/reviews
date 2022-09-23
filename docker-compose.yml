@@ -7,7 +7,7 @@ services:
       - 80:80
     environment:
       KAFKA_SERVERS: kafka:9092
-      CASSANDRA_SERVER: cassandra
+      CASSANDRA_SERVERS: cassandra, cassandra2
       MEMCACHED_SERVER: memcached
       PYTHONUNBUFFERED: 1
     depends_on:
@@ -19,7 +19,7 @@ services:
     build: ./db_writer
     environment:
       KAFKA_SERVERS: kafka:9092
-      CASSANDRA_SERVER: cassandra
+      CASSANDRA_SERVERS: cassandra, cassandra2
       MEMCACHED_SERVER: memcached
       PYTHONUNBUFFERED: 1
     depends_on:
@@ -50,6 +50,12 @@ services:
     ports:
       - 9042:9042
     environment:
+      - CASSANDRA_CLUSTER_NAME=reviews
+
+  cassandra2:
+    image: cassandra:4.0
+    environment:
+      - CASSANDRA_SEEDS=cassandra
       - CASSANDRA_CLUSTER_NAME=reviews
 
   cassandra-init:
